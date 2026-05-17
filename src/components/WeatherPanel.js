@@ -1,8 +1,18 @@
-import React, { useState } from "react"; // <-- El parche exacto: React vuelve a estar en scope
+
+import React, { useState } from "react";
 import Form from "./Form";
 import Card from "./Card";
 
 const WeatherPanel = () => {
+  //https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={f58efdd7327be9409047185bcc2073c0}
+
+  let urlWeather =
+    "https://api.openweathermap.org/data/2.5/weather?appid=f58efdd7327be9409047185bcc2073c0&lan=es";
+  let cityUrl = "&q=";
+
+  let urlForecast =
+    "https://api.openweathermap.org/data/2.5/forecast?appid=f58efdd7327be9409047185bcc2073c0&lang=es";
+
   const [weather, setWeather] = useState([]);
   const [forecast, setForecast] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -13,44 +23,46 @@ const WeatherPanel = () => {
     setLoading(true);
     setLocation(loc);
 
-    // Tu API Key limpia y segura
-    const appId = "f58efdd7327be9409047185bcc2073c0";
+    //weather
 
-    // Construcción limpia y dinámica de URLs en cada búsqueda con "lang" bien escrito
-    const urlWeather = `https://api.openweathermap.org/data/2.5/weather?appid=${appId}&lang=es&units=metric&q=${loc}`;
-    const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?appid=${appId}&lang=es&units=metric&q=${loc}`;
+    urlWeather = urlWeather + cityUrl + loc;
 
-    // 1. Petición Clima Actual (Weather)
-    try {
-      const responseWeather = await fetch(urlWeather);
-      if (!responseWeather.ok) throw new Error("Error en la petición de clima");
-      const weatherData = await responseWeather.json();
-      
-      console.log(weatherData);
-      setWeather(weatherData);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-      setShow(false);
-      return; // Detiene la ejecución si el clima falla
-    }
+    await fetch(urlWeather)
+      .then((response) => {
+        if (!response.ok) throw { response };
+        return response.json();
+      })
+      .then((weatherData) => {
+        console.log(weatherData);
+        setWeather(weatherData);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+        setShow(false);
+      });
 
-    // 2. Petición Pronóstico (Forecast)
-    try {
-      const responseForecast = await fetch(urlForecast);
-      if (!responseForecast.ok) throw new Error("Error en la petición de pronóstico");
-      const forecastData = await responseForecast.json();
-      
-      console.log(forecastData);
-      setForecast(forecastData);
-      
-      setLoading(false);
-      setShow(true);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-      setShow(false);
-    }
+    //Forecast
+
+    urlForecast = urlForecast + cityUrl + loc;
+
+    await fetch(urlForecast)
+      .then((response) => {
+        if (!response.ok) throw { response };
+        return response.json();
+      })
+      .then((forecastData) => {
+        console.log(forecastData);
+        setForecast(forecastData);
+
+        setLoading(false);
+        setShow(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+        setShow(false);
+      });
   };
 
   return (
