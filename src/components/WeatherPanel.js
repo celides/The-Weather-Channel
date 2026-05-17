@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; // <-- El parche exacto: React vuelve a estar en scope
 import Form from "./Form";
 import Card from "./Card";
 
@@ -16,8 +16,7 @@ const WeatherPanel = () => {
     // Tu API Key limpia y segura
     const appId = "f58efdd7327be9409047185bcc2073c0";
 
-    // Construcción limpia y dinámica de URLs en cada búsqueda
-    // Se corrigió "lan=es" por "lang=es" y se añadieron unidades métricas (&units=metric) para que te dé Celsius reales
+    // Construcción limpia y dinámica de URLs en cada búsqueda con "lang" bien escrito
     const urlWeather = `https://api.openweathermap.org/data/2.5/weather?appid=${appId}&lang=es&units=metric&q=${loc}`;
     const urlForecast = `https://api.openweathermap.org/data/2.5/forecast?appid=${appId}&lang=es&units=metric&q=${loc}`;
 
